@@ -1,6 +1,15 @@
 # C3 User Data Management Dashboard Application
 
-write a description of the app
+The C3 Web Portal App is a sales management application that provides a range of features for managing work order forms, claims, and reports. The app is designed to help dealerships streamline their sales processes and improve their overall performance.
+
+The app requires user authentication and login to ensure that only authorized users can access the portal. Once logged in, users can access the sales portal, which includes a form for creating new work order forms. The work order form includes fields for entering details such as the customer name, vehicle information, and service requirements. Users can then submit the completed form to the C3 portal for processing.
+
+The claims portal is designed for users with the authority to submit claims. This feature enables dealerships to quickly and easily submit claims for reimbursement or other purposes. Users can enter the details of the claim, including the claim type, amount, and supporting documentation. The claim is then submitted to the C3 portal for processing.
+
+The reports and analytics page provides valuable insights into daily sales and total revenue. The graph on the page shows trends and patterns in sales over time, while the two tables provide detailed information about sales and the number of claims. This data can be used to track performance, identify areas for improvement, and make data-driven decisions about sales and operations.
+
+Overall, the C3 Web Portal App provides a range of features for managing sales, claims, and reports. Its user-friendly interface and advanced features make it a valuable asset for dealerships looking to improve their sales processes and overall performance.
+
 
 ## Data Management
 
@@ -49,7 +58,7 @@ Once the user is logged in, they will be able to access the the subsystems that 
 | Claims     | <img src="./images/auth_claims.png" width="400" align="center"> |
 | Reports    | <img src="./images/auth_reports.png" width="400" align="center">|
 
-More details are included in the pdf file "build_information"
+More details are included in the pdf file 'build_information.pdf'
 
 
 ### Sales 
@@ -111,12 +120,9 @@ Following the problem section is the claim amounts section. This section include
    <img src="./images/claim_amounts.png" width="400" align="center">
 </p>
 
-More details are included in the pdf file "build_information"
+More details are included in the pdf file 'build_information.pdf'
 
 ### Reports
-*In order to make the graphs interactive, JavaScript would be required. However, as this functionality falls outside the scope of this project at the moment, it is still under development. 
-
-*The export button is currently under development as the database is still being developed. Once the database is complete, the export button will be implemented to allow users to export the data from the Sales Table and Claim Count Table to an CSV file.
 <p align="center">
    <img src="./images/reports_1.png" width="400" align="center">
 </p>
@@ -124,3 +130,6 @@ More details are included in the pdf file "build_information"
    <img src="./images/reports_2.png" width="400" align="center">
 </p>
 
+*In order to make the graphs interactive, JavaScript would be required. However, as this functionality falls outside the scope of this project at the moment, it is still under development. 
+
+*The export button is currently under development as the database is still being developed. Once the database is complete, the export button will be implemented to allow users to export the data from the Sales Table and Claim Count Table to an CSV file.
