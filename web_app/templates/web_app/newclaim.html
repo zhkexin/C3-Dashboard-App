@@ -1,0 +1,1425 @@
+<!-- Anything without a source specified was learned from chatgpt and https://getbootstrap.com/docs/4.0/examples/ -->
+
+{% extends "web_app/base.html" %}
+
+{% block content %}
+
+
+<br>
+
+<!-- Navigation Tabs, source: https://getbootstrap.com/docs/4.0/components/navbar/ -->
+<ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" href="{% url 'web_app:claims'%}">All Claims</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="allclaims-tab" data-bs-toggle="tab" href="{% url 'web_app:newclaim'%}" role="tab" aria-controls="nav-newclaim" aria-selected="true">New Claim</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link disabled" href="Policies">Policies</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link disabled" href="Warranties">Warranties</a>
+    </li>
+</ul> <!-- END - Navigation Tabs -->
+
+<br>
+
+<!-- New Claim Form, source: https://getbootstrap.com/docs/4.0/examples/-->
+<div class="container">
+
+    <!-- Heading -->
+    <div class="py-5 text-center">
+      <h2>New Claim</h2>
+      <p class="lead">Enter a new claim by filling out the information below.</p>
+    </div>
+
+    <!-- Form -->
+    <div class="col-md-15 order-md-0">
+        <form method="post" action="{% url 'web_app:newclaim' %}" id="claimForm" class="needs-validation" novalidate>
+            {% csrf_token %}  
+            
+            <!-- Claim Information Row -->
+            <div class="row justify-content-center">
+
+                <!-- Claim # -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_number">Claim #</label>
+                    <input type="text" class="form-control" id="claim_number" name="claim_number" value="{{ claim_number }}" disabled>
+                </div> <!-- END - Claim # -->
+
+                <!-- Date Added -->
+                <div class="col-md-3 mb-3">
+                    <label for="date_added">Date Added</label>
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="date_added" name="date_added" value="{{ formatted_date }}" required disabled>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div> 
+                
+                <script>
+                    // Get the current date
+                    var currentDate = new Date();
+                
+                    // Set the value of the claim date field to the formatted date
+                    var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                    var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                    document.getElementById("date_added").value = formattedDate;
+                
+                    // Initialize the datepicker
+                    $('.input-group.date').datepicker({
+                    format: 'MM dd, yyyy',
+                    todayHighlight: true,
+                    autoclose: true,
+                    orientation: 'bottom',
+                    templates: {
+                        leftArrow: '<i class="fa fa-angle-left"></i>',
+                        rightArrow: '<i class="fa fa-angle-right"></i>'
+                    }
+                    });
+                </script> <!-- END - Date Added -->
+
+                <!-- Status -->
+                <div class="col-md-3 mb-3">
+                    <label for="status">Status</label>
+                    <select class="custom-select d-block w-100" id="status" name="status" required>
+                        <option value="">Choose...</option>
+                        <option value="status_info">Information Only</option>
+                        <option value="status_pending">Pending</option>
+                        <option value="status_submitted">Submitted</option>
+                        <option value="status_approved">Approved</option>
+                        <option value="status_rejected">Rejected</option>
+                        <option value="status_paid">Paid</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a status.
+                    </div>
+                </div> <!-- END - Status -->
+    
+            </div> <!-- END - Claim Information Row -->
+
+
+            <!-- Dates Row -->
+            <div class="row justify-content-center">
+                
+                <!-- Include the Bootstrap and jQuery libraries -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                
+                <!-- Include the Bootstrap datepicker library -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+                <!-- Claim Date -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_date">Claim Date</label>
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="claim_date" name="claim_date" value="{{ formatted_date }}" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div> <!-- END - Claim Date -->
+                
+                <script>
+                    // Get the current date
+                    var currentDate = new Date();
+                
+                    // Set the value of the claim date field to the formatted date
+                    var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                    var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                    document.getElementById("claim_date").value = formattedDate;
+                
+                    // Initialize the datepicker
+                    $('.input-group.date').datepicker({
+                    format: 'MM dd, yyyy',
+                    todayHighlight: true,
+                    autoclose: true,
+                    orientation: 'bottom',
+                    templates: {
+                        leftArrow: '<i class="fa fa-angle-left"></i>',
+                        rightArrow: '<i class="fa fa-angle-right"></i>'
+                    }
+                    });
+                </script>
+
+                <!-- Effective Date --> 
+                <div class="col-md-3 mb-3">
+                    <label for="effective_date">Effective Date</label>
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="effective_date" name="effective_date" value="{{ formatted_date }}" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div> <!-- END - Effective Date --> 
+                
+                <script>
+                    // Get the current date
+                    var currentDate = new Date();
+                
+                    // Set the value of the claim date field to the formatted date
+                    var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                    var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                    document.getElementById("effective_date").value = formattedDate;
+                
+                    // Initialize the datepicker
+                    $('.input-group.date').datepicker({
+                    format: 'MM dd, yyyy',
+                    todayHighlight: true,
+                    autoclose: true,
+                    orientation: 'bottom',
+                    templates: {
+                        leftArrow: '<i class="fa fa-angle-left"></i>',
+                        rightArrow: '<i class="fa fa-angle-right"></i>'
+                    }
+                    });
+                </script>
+
+                <!-- Process Date --> 
+                <div class="col-md-3 mb-3">
+                    <label for="process_date">Process Date</label>
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="process_date" name="process_date" value="{{ formatted_date }}" required>
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                    // Get the current date
+                    var currentDate = new Date();
+                
+                    // Set the value of the claim date field to the formatted date
+                    var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                    var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                    document.getElementById("process_date").value = formattedDate;
+                
+                    // Initialize the datepicker
+                    $('.input-group.date').datepicker({
+                    format: 'MM dd, yyyy',
+                    todayHighlight: true,
+                    autoclose: true,
+                    orientation: 'bottom',
+                    templates: {
+                        leftArrow: '<i class="fa fa-angle-left"></i>',
+                        rightArrow: '<i class="fa fa-angle-right"></i>'
+                    }
+                    });
+                </script> <!-- END - Process Date --> 
+            </div> <!-- END - Dates Row -->
+
+            <!-- Order Information Row -->
+            <div class="row justify-content-center">
+                
+                <!-- PO Number -->
+                <div class="col-md-3 mb-3">
+                    <label for="po_num">PO #</label>
+                    <input type="text" class="form-control" id="po_num" name="po_num" placeholder="" required>
+                    <div class="invalid-feedback">
+                        PO # required.
+                    </div>
+                </div> <!-- END - PO Number -->
+
+                <!-- File Number -->
+                <div class="col-md-3 mb-3">
+                    <label for="file_num">File #</label>
+                    <input type="text" class="form-control" id="file_num" name="file_num" placeholder="" required>
+                    <div class="invalid-feedback">
+                        File # required.
+                    </div>
+                </div> <!-- END - File Number -->
+
+                <!-- Inspection Agreement # -->
+                <div class="col-md-3 mb-3">
+                <label for="agreement">Agreement #</label>
+                <input type="text" class="form-control" id="agreement" name="agreement" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Agreement required.
+                    </div>
+                </div> <!-- END - Inspection Agreement # -->
+
+                <!-- Blank for Formatting --> <!-- 
+                <div class="col-md-3 mb-3" style="visibility: hidden;">
+                    <label for="blank"> </label>
+                    <input type="text" class="form-control" id="blank" placeholder="" required>
+                    <div class="invalid-feedback">
+                        File # required.
+                    </div>
+                </div> -->
+            </div> <!-- END - Order Information Row -->
+
+            <br>
+            <br>
+
+            <!-- Approval Row (hidden unless approved selected in status)-->
+
+            <!-- Hide/Show Approval Row -->
+            <script>
+                $(document).ready(function() {
+                    // Hide the Approval section initially
+                    $('#approval-section').hide();
+            
+                    // Add an event listener to the Status field
+                    $('#status').on('change', function() {
+                        var status = $(this).val();
+                        if (status === 'status_approved') {
+                            $('#approval-section').show();
+                        } else {
+                            $('#approval-section').hide();
+                        }
+                    });
+                });
+            </script> <!-- END - Hide/Show Approval Row -->
+
+            <div id="approval-section">
+                <h4 class="mb-3 text-center">Approval</h4>
+                <div class="row justify-content-center">
+                    <!-- Approved By -->
+                    <div class="col-md-3 mb-3">
+                        <label for="claim_approvedby">Approved By</label>
+                        <input type="text" class="form-control" id="claim_approvedby" name="claim_approvedby" placeholder="">
+                        <div class="invalid-feedback">
+                            Name required.
+                        </div>
+                    </div> <!-- END - Approved By -->
+
+                    <!-- Approved To -->
+                    <div class="col-md-3 mb-3">
+                        <label for="claim_approvedto">Approved To</label>
+                        <input type="text" class="form-control" id="claim_approvedto" name="claim_approvedto" placeholder="">
+                        <div class="invalid-feedback">
+                            Name required.
+                        </div>
+                    </div> <!-- END - Approved To -->
+
+                    <!-- Include the Bootstrap and jQuery libraries -->
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+                    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+                    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                    
+                    <!-- Include the Bootstrap datepicker library -->
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+                    <!-- Approved Date --> 
+                    <div class="col-md-3 mb-3">
+                        <label for="claim_approved_date">Approved Date</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="claim_approved_date" name="claim_approved_date" value="{{ formatted_date }}">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    <script>
+                        // Get the current date
+                        var currentDate = new Date();
+                    
+                        // Set the value of the claim date field to the formatted date
+                        var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                        var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                        document.getElementById("claim_approved_date").value = formattedDate;
+                    
+                        // Initialize the datepicker
+                        $('.input-group.date').datepicker({
+                        format: 'MM dd, yyyy',
+                        todayHighlight: true,
+                        autoclose: true,
+                        orientation: 'bottom',
+                        templates: {
+                            leftArrow: '<i class="fa fa-angle-left"></i>',
+                            rightArrow: '<i class="fa fa-angle-right"></i>'
+                        }
+                        });
+                    </script> <!-- END - Approved Date --> 
+                </div> <!-- END - Approval Row -->
+
+                <!-- Approval Entries Required when Approved is selected in Status -->
+                <script>
+                    $('#status').on('change', function() {
+                    if ($(this).val() === 'status_approved') {
+                        $('.approval-section').show();
+                        $('#claim_approvedby').attr('required', true);
+                        $('#claim_approvedto').attr('required', true);
+                        $('#claim_approved_date').attr('required', true);
+                    } else {
+                        $('.approval-section').hide();
+                        $('#claim_approvedby').removeAttr('required');
+                        $('#claim_approvedto').removeAttr('required');
+                        $('#claim_approved_date').removeAttr('required');
+                    }
+                    });
+                </script> <!-- END - Approval Entries Required when Approved is selected in Status -->
+
+                <br>
+                <br>
+            </div> <!-- END - Approval Row (hidden unless approved selected in status)-->
+
+
+            <!-- Rejected Row (hidden unless rejected selected in status)-->
+
+            <!-- Hide/Show Rejected Row -->
+            <script>
+                $(document).ready(function() {
+                    // Hide the Rejected section initially
+                    $('#rejected-section').hide();
+            
+                    // Add an event listener to the Status field
+                    $('#status').on('change', function() {
+                        var status = $(this).val();
+                        if (status === 'status_rejected') {
+                            $('#rejected-section').show();
+                        } else {
+                            $('#rejected-section').hide();
+                        }
+                    });
+                });
+            </script> <!-- END - Hide/Show Rejected Row -->
+
+            <div id="rejected-section">
+                <h4 class="mb-3 text-center">Rejected</h4>
+                <div class="row justify-content-center">
+                    <!-- Rejected By -->
+                    <div class="col-md-4 mb-3">
+                        <label for="claim_rejectedby">Rejected By</label>
+                        <input type="text" class="form-control" id="claim_rejectedby" name="claim_rejectedby" placeholder="">
+                        <div class="invalid-feedback">
+                            Name required.
+                        </div>
+                    </div> <!-- END - Rejected By -->
+
+                    <!-- Rejection Date --> 
+                    <div class="col-md-4 mb-3">
+                        <label for="claim_rejection_date">Rejection Date</label>
+                        <div class="input-group date">
+                            <input type="text" class="form-control" id="claim_rejection_date" name="claim_rejection_date" value="{{ formatted_date }}">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    <script>
+                        // Get the current date
+                        var currentDate = new Date();
+                    
+                        // Set the value of the claim date field to the formatted date
+                        var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                        var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                        document.getElementById("claim_rejection_date").value = formattedDate;
+                    
+                        // Initialize the datepicker
+                        $('.input-group.date').datepicker({
+                        format: 'MM dd, yyyy',
+                        todayHighlight: true,
+                        autoclose: true,
+                        orientation: 'bottom',
+                        templates: {
+                            leftArrow: '<i class="fa fa-angle-left"></i>',
+                            rightArrow: '<i class="fa fa-angle-right"></i>'
+                        }
+                        });
+                    </script> <!-- END - Rejection Date --> 
+                </div>
+
+                <div class="row justify-content-center">
+                    <!-- Reason For Rejection -->
+                    <div class="col-8">
+                        <label for="claim_rejection_reason">Reason for Rejection</label>
+                        <textarea class="form-control" id="claim_rejection_reason" name="claim_rejection_reason" placeholder="Enter text here" rows="5" required></textarea>
+                        <div class="invalid-feedback">
+                            Reason required.
+                        </div>
+                    </div> <!-- END - Reason For Rejection -->
+                </div>
+                
+                <!-- Rejected Entries Required when Rejected is selected in Status -->
+                <script>
+                    $('#status').on('change', function() {
+                    if ($(this).val() === 'status_rejected') {
+                        $('.approval-section').show();
+                        $('#claim_rejectedby').attr('required', true);
+                        $('#claim_rejection_reason').attr('required', true);
+                        $('#claim_rejection_date').attr('required', true);
+                    } else {
+                        $('.approval-section').hide();
+                        $('#claim_rejectedby').removeAttr('required');
+                        $('#claim_rejection_reason').removeAttr('required');
+                        $('#claim_rejection_date').removeAttr('required');
+                    }
+                    });
+                </script> <!-- END - Rejected Entries Required when Rejected is selected in Status -->
+
+                <br>
+                <br>
+            </div> <!-- END - Rejected Row (hidden unless rejected selected in status)-->
+
+            <!-- Dealership Information -->
+            <h4 class="mb-3 text-center">Repair Shop Information</h4>
+
+            <!-- Active -->
+            <input type="checkbox" id="shop_active" name="shop_active">
+            <label for="shop_active">Active</label>
+
+            <!-- Dealership Information Row 1 -->
+            <div class="row justify-content-center">
+                <!-- Shop Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="shop_name">Shop Name</label>
+                    <input type="text" class="form-control" id="shop_name" name="shop_name" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Shop name required.
+                    </div>
+                </div> <!-- END - Shop Name -->
+
+                <!-- Phone Number -->
+                <div class="col-md-6 mb-3">
+                    <label for="shop_phone">Phone Number</label>
+                    <input type="tel" class="form-control" id="shop_phone" name="shop_phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" required>
+                    <div class="invalid-feedback">
+                        Phone number required.
+                    </div>
+                </div> 
+
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script>
+                    $(document).ready(function() {
+                        $('#shop_phone').on('input', function() {
+                            var input = $(this).val();
+                            if (input.match(/[^\d]/g)) {
+                                // Remove all non-numeric characters
+                                input = input.replace(/[^\d]/g, '');
+                                $(this).val(input);
+                            }
+                            // Format the phone number
+                            if (input.length >= 3) {
+                                input = input.slice(0, 3) + '-' + input.slice(3);
+                            }
+                            if (input.length >= 7) {
+                                input = input.slice(0, 7) + '-' + input.slice(7);
+                            }
+                            $(this).val(input);
+                        });
+                    });
+                </script> <!-- END - Phone Number -->
+
+            </div> <!-- END - Dealership Information Row 1 -->
+
+
+            <!-- Dealership Information Row 2 -->
+            <div class="row justify-content-center">
+
+                <!-- Contact Name -->
+                <div class="col-md-6 mb-3">
+                    <label for="shop_contact">Contact Name <span class="text-muted">(Optional)</span></label>
+                    <input type="text" class="form-control" id="shop_contact" name="shop_contact" placeholder="">
+                </div> <!-- END - Contact Name -->
+
+                <!-- Email -->
+                <div class="col-md-6 mb-3">
+                    <label for="shop_email">Email <span class="text-muted">(Optional)</span></label>
+                    <input type="email" class="form-control" id="shop_email" name="shop_email" placeholder="you@example.com">
+                    <div class="invalid-feedback">
+                        Please enter a valid email address.
+                    </div>
+                </div> <!-- END - Email -->
+            </div> <!-- END - Dealership Information Row 2 -->
+
+
+            <!-- Dealership Information Row 3- -->
+            <!-- Address -->
+            <div class="mb-2">
+                <label for="shop_address">Address</label>
+                <input type="text" class="form-control" id="shop_address" name="shop_address" placeholder="1234 Main St" required>
+                <div class="invalid-feedback">
+                    Please enter your shipping address.
+                </div>
+            </div> <!-- END - Address -->
+
+            <!-- Dealership Information Row 4- -->
+            <!-- Address 2 (Optional) -->
+            <div class="mb-2">
+                <label for="shop_address2">Address 2 <span class="text-muted">(Optional)</span></label>
+                <input type="text" class="form-control" id="shop_address2" name="shop_address2" placeholder="Apartment or Suite">
+            </div> <!-- END - Address 2 (Optional) -->
+
+            <!-- Dealership Information Row 5- -->
+            <div class="row justify-content-center">
+                <!-- Country -->
+                <div class="col-md-4 mb-3">
+                    <label for="shop_country">Country</label>
+                    <select class="custom-select d-block w-100" id="shop_country" name="shop_country" required>
+                        <option value="">Choose...</option>
+                        <option value="CAN" selected>Canada</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a valid country.
+                    </div>
+                </div> <!-- END - Country -->
+
+                <!-- Province -->
+                <div class="col-md-4 mb-3">
+                    <label for="shop_province">Province/Territory</label>
+                    <select class="custom-select d-block w-100" id="shop_province" name="shop_province" required>
+                        <option value="">Choose...</option>
+                        <option value="AB">Alberta</option>
+                        <option value="BC">British Columbia</option>
+                        <option value="MB">Manitoba</option>
+                        <option value="NB">New Brunswick</option>
+                        <option value="NL">Newfoundland and Labrador</option>
+                        <option value="NT">Northwest Territories</option>
+                        <option value="NS">Nova Scotia</option>
+                        <option value="NU">Nunavut</option>
+                        <option value="ON">Ontario</option>
+                        <option value="PE">Prince Edward Island</option>
+                        <option value="QC">Quebec</option>
+                        <option value="SK">Saskatchewan</option>
+                        <option value="YT">Yukon</option>
+                    </select>
+                    <div class="invalid-feedback">
+                    Please provide a valid province or territory.
+                    </div>
+                </div> <!-- END - Province -->
+
+                <!-- Postal Code -->
+                <div class="col-md-4 mb-3">
+                    <label for="shop_postalcode">Postal Code</label>
+                    <input type="text" class="form-control" id="shop_postalcode" name="shop_postalcode" placeholder="A1A 1A1" required>
+                    <div class="invalid-feedback">
+                    Postal code required.
+                    </div>
+                </div> 
+
+                <script>
+                    $(document).ready(function() {
+                    $('#shop_postalcode').on('input', function() {
+                        var val = $(this).val();
+                        val = val.replace(/[^A-Za-z0-9]/g, '');
+                        if (val.length > 3 && val.length <= 6) {
+                        val = val.substring(0, 3) + ' ' + val.substring(3);
+                        } else if (val.length > 6) {
+                        val = val.substring(0, 3) + ' ' + val.substring(3, 6);
+                        }
+                        $(this).val(val.toUpperCase());
+                    });
+                    });
+                </script> <!-- END -Postal Code -->
+
+            </div>  <!-- END - Dealership Information Row 5- -->
+
+            
+            <br>
+            <br>
+
+
+            <!-- Customer Information -->
+            <h4 class="mb-3 text-center">Customer Information</h4>
+
+            <!-- Customer Information Row 1 -->
+            <div class="row justify-content-center">
+
+                <!-- First Name -->
+                <div class="col-md-2 mb-3">
+                    <label for="cust_fname">First Name</label>
+                    <input type="text" class="form-control" id="cust_fname" name="cust_fname" placeholder="" required>
+                    <div class="invalid-feedback">
+                        First name required.
+                    </div>
+                </div> <!-- END - First Name -->
+
+                <!-- Last Name -->
+                <div class="col-md-2 mb-3">
+                    <label for="cust_lname"> Last Name</label>
+                    <input type="text" class="form-control" id="cust_lname" name="cust_lname" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Last name required.
+                    </div>
+                </div> <!-- END - Last Name -->
+
+                <!-- Policy Type -->
+                <div class="col-md-2 mb-3">
+                    <label for="policy_type">Policy Type</label>
+                    <input type="text" class="form-control" id="policy_type" name="policy_type" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Policy type required.
+                    </div>
+                </div> <!-- END - Policy Type -->
+
+                <!-- Coverage Type -->
+                <div class="col-md-2 mb-3">
+                    <label for="coverage_type">Coverage Type</label>
+                    <input type="text" class="form-control" id="coverage_type" name="coverage_type" placeholder="" required>
+                    <div class="invalid-feedback">
+                        Coverage type required.
+                    </div>
+                </div> <!-- END - Coverage Type -->
+
+            </div>  <!-- END - Customer Information Row 1 -->
+
+            <!-- Customer Information Row 2 -->
+            <div class="row justify-content-center">
+                <!-- Vehicle VIN -->
+                <div class="col-md-2 mb-3">
+                    <label for="vin">Vehicle VIN</label>
+                    <input type="text" class="form-control" id="vin" name="vin" placeholder="" required>
+                    <div class="invalid-feedback">
+                    Valid VIN required.
+                    </div>
+                </div> <!-- END - Vehicle VIN -->
+
+                <!-- Vehicle Make (Future Feature) -->
+                <div class="col-md-2 mb-3">
+                    <label for="make">Make</label>
+                    <input type="text" class="form-control" id="make" name="make" placeholder="(Future Feature)" readonly>
+                </div> <!-- END - Vehicle Make (Future Feature) -->
+
+                <!-- Vehicle Model (Future Feature) -->
+                <div class="col-md-2 mb-3">
+                    <label for="model">Model</label>
+                    <input type="text" class="form-control" id="model" name="model" placeholder="(Future Feature)" readonly>
+                </div> <!-- END - Vehicle Model (Future Feature) -->
+
+                <!-- Vehicle Year (Future Feature) -->
+                <div class="col-md-2 mb-3">
+                    <label for="veh_year">Year</label>
+                    <input type="text" class="form-control" id="veh_year" name="veh_year" placeholder="(Future Feature)" readonly>
+                </div> <!-- END - Vehicle Year (Future Feature) -->
+            </div> <!-- END - Customer Information Row 2 -->
+
+                <!-- Vehicle VIN Validation-->
+                <script>
+                    $(document).ready(function() {
+                        $('#vin').on('input', function() {
+                            var val = $(this).val().toUpperCase();
+                            val = val.replace(/[^A-HJ-NPR-Z0-9]/g, '');
+                            if (val.length == 17) {
+                                $.get('{% url "web_app:validate_vin" %}', {vin: val}, function(response) {
+                                    if (response.valid) {
+                                        $('#make').val(response.make);
+                                        $('#model').val(response.model);
+                                        $('#veh_year').val(response.year);
+                                    } else {
+                                        $('#make').val('');
+                                        $('#model').val('');
+                                        $('#veh_year').val('');
+                                    }
+                                    $('#vin').removeClass('is-invalid');
+                                    $('#vin').addClass('is-valid');
+                                }).fail(function() {
+                                    $('#make').val('');
+                                    $('#model').val('');
+                                    $('#veh_year').val('');
+                                    $('#vin').removeClass('is-valid');
+                                    $('#vin').addClass('is-invalid');
+                                });
+                            } else {
+                                $('#make').val('');
+                                $('#model').val('');
+                                $('#veh_year').val('');
+                                $('#vin').removeClass('is-valid');
+                                $('#vin').addClass('is-invalid');
+                            }
+                            $(this).val(val);
+                        });
+
+                        $('#vin').on('blur', function() {
+                            if ($(this).val().length != 17) {
+                                $(this).removeClass('is-valid');
+                                $(this).addClass('is-invalid');
+                            } else {
+                                $(this).removeClass('is-invalid');
+                                $(this).addClass('is-valid');
+                            }
+                        });
+                    });
+                </script> <!-- END - Vehicle VIN Validation-->
+
+
+            <br>
+            <br>
+
+                
+            <!-- Problem Information Row -->
+            <div class="row justify-content-between align-items-center mb-3">
+                <div class="col text-center">
+                <h4 class="mb-2">Problem</h4>
+                </div>
+                
+            </div>
+
+            
+            <div class="problem-row-container justify-content-center">
+                <div class="row justify-content-center problem-row" id="problemrow">
+                    <div class="col-md-10 mb-4">
+                        <div class="form-group">
+                        <div class="row justify-content-center">
+
+                                <!-- Type -->
+                                <div class="col-md-2 mb-4">
+                                    <label for="prob_type">Type</label>
+                                    <select class="custom-select d-block w-100" id="prob_type" name="prob_type" required>
+                                        <option value="">Choose...</option>
+                                        <option value="prob_fabric">Fabric</option>
+                                        <option value="prob_leathvin">Leather/Vinyl</option>
+                                        <option value="prob_paint">Paint</option>
+                                        <option value="prob_rust">Rust</option>
+                                        <option value="prob_theft">Theft</option>
+                                        <option value="prob_undercoat">Undercoat</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a type.
+                                    </div>
+                                </div> <!-- END - Type -->
+
+                                <!-- Description -->
+                                <div class="col-md-2 mb-4">
+                                    <label for="prob_description">Description</label>
+                                    <input type="text" class="form-control" id="prob_description" name="prob_description" placeholder="" required>
+                                    <div class="invalid-feedback">
+                                        Description required.
+                                    </div>
+                                </div> <!-- END - Description -->
+
+                                <!-- Part -->
+                                <div class="col-md-2 mb-4">
+                                    <label for="prob_part">Part</label>
+                                    <input type="text" class="form-control" id="prob_part" name="prob_part" placeholder="" required>
+                                    <div class="invalid-feedback">
+                                        Part required.
+                                    </div>
+                                </div> <!-- END - Part -->
+
+                                <!-- Side -->
+                                <div class="col-md-2 mb-4">
+                                    <label for="prob_side">Side</label>
+                                    <select class="custom-select d-block w-100" id="prob_side" name="prob_side" required>
+                                        <option value="">Choose...</option>
+                                        <option value="prob_bothsides">Both</option>
+                                        <option value="prob_leftside">Left</option>
+                                        <option value="prob_rightside">Right</option>
+                                        <option value="prob_noside">N/A</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a side.
+                                    </div>
+                                </div> <!-- END - Side -->
+
+                                <!-- Goodwill -->
+                                <div class="col-md-2 mb-4">
+                                    <label for="goodwill">Goodwill</label>
+                                    <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">$</span>
+                                    </div>
+                                    <input type="number" class="form-control goodwill" id="goodwill" name="goodwill" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                                    </div>
+                                </div> 
+                                
+                                <script>
+                                    function roundToTwoDecimalPlaces(inputField) {
+                                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                                    }
+                                </script> <!-- END - Goodwill -->
+                            
+                        
+                                <!-- Remove/Add Problem Buttons --> 
+                                <div class="col-md-2">
+                                    <div class="col-md-12 mb-4 d-flex justify-content-end align-items-center">
+                                        
+                                        <!-- Remove Problem Button --> 
+                                        <button type="button" onclick="removeRow(this)" class="btn btn-dark remove-problem-btn" style="margin-top: 30px; width: 35px; margin-right: 10px;">-</button>
+                                
+                                        <!-- Add Another Problem Button --> 
+                                        <button type="button" onclick="duplicate()" class="btn btn-dark" style="margin-top: 30px; width: 35px;" id="add-problem-btn">+</button>
+                                        
+                                    </div> 
+                                </div> <!-- END - Remove/Add Problem Buttons --> 
+
+                                <!-- Add Problem Rows --> 
+                                <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
+                                <script>
+                                    $(document).ready(function() {
+                                        // Add new row on button click
+                                        $('.problem-row-container').on('click', '#add-problem-btn', function(){
+                                            var newRow = $('.problem-row:last').clone();
+                                            newRow.find('input[type=text]').val(''); // clear input fields
+                                            newRow.find('select').prop('selectedIndex',0); // reset select fields
+                                
+                                            // Add Bootstrap classes to cloned elements
+                                            newRow.find('.col-md-2').removeClass('col-md-2').addClass('col-md-2 mb-3');
+                                            newRow.find('.custom-select').removeClass('d-block w-100').addClass('form-control');
+                                
+                                            // Set Goodwill field value to $0.00
+                                            newRow.find('.goodwill').val('0.00');
+                                
+                                            newRow.attr('class', 'row justify-content-center problem-row'); // add class name to new row
+                                
+                                            // Insert new row after the clicked row
+                                            newRow.insertAfter($(this).closest('.problem-row'));
+                                        });
+                                    });
+                                </script> <!-- END - Add Problem Rows --> 
+                        
+                                <!-- Remove row on button click -->
+                                <script>
+                                    function removeRow(button) {
+                                        var row = button.closest('.problem-row');
+                                        var rows = document.querySelectorAll('.problem-row');
+                                        if (rows.length > 1) {
+                                            row.remove();
+                                        }
+                                    }
+                                </script> <!-- END - Remove row on button click -->
+
+                            </div>      
+                        </div>  
+                    </div>
+                </div>
+                
+            </div> <!-- END - Problem Information Row -->
+                    
+        
+
+            <!-- Details Row -->
+            <h4 class="mb-3 text-center">Details</h4>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <textarea class="form-control" id="claim_details" name="claim_details" placeholder="Enter text here" rows="5"></textarea>
+                </div>
+            </div> <!-- END - Details Row -->
+
+            <br>
+            <br>
+
+            <!-- Upload Claim Images Row -->
+            <h4 class="mb-3 text-center">Upload Claim Images</h4>
+
+            <!-- File upload section -->
+            <div class="row justify-content-center">
+                <input type="file" id="file-input" onchange="handleFileSelect(event)" multiple>
+            </div>
+
+            <br>
+
+            <!-- Image preview section -->  
+            <div id="preview">
+                <div class="preview-row"></div>
+            </div> 
+               
+            <script>
+                function handleFileSelect(event) {
+                    const files = event.target.files;
+                    const preview = document.getElementById("preview");
+                    let counter = 0;
+
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+                        const reader = new FileReader();
+
+                        reader.onload = function (event) {
+                            const img = new Image();
+                            img.src = event.target.result;
+
+                            img.onload = function () {
+                                // Resize the image to 250 x 250
+                                const canvas = document.createElement("canvas");
+                                const ctx = canvas.getContext("2d");
+
+                                const width = img.width;
+                                const height = img.height;
+                                const max_size = 250;
+
+                                let new_width;
+                                let new_height;
+
+                                if (width > height) {
+                                    new_width = max_size;
+                                    new_height = (height * max_size) / width;
+                                } else {
+                                    new_height = max_size;
+                                    new_width = (width * max_size) / height;
+                                }
+
+                                canvas.width = new_width;
+                                canvas.height = new_height;
+
+                                ctx.drawImage(img, 0, 0, new_width, new_height);
+
+                                const resizedImg = document.createElement("img");
+                                resizedImg.src = canvas.toDataURL();
+
+                                // Append the resized image to the corresponding row
+                                const rows = preview.querySelectorAll(".preview-row");
+                                const lastRow = rows[rows.length - 1];
+                                if (lastRow && lastRow.querySelectorAll(".preview-column").length < 3) {
+                                    // Add the image to the last row if it has enough space
+                                    const column = document.createElement("div");
+                                    column.classList.add("preview-column");
+                                    column.appendChild(resizedImg);
+                                    lastRow.appendChild(column);
+                                } else {
+                                    // Create a new row and add the image to it
+                                    const row = document.createElement("div");
+                                    row.classList.add("preview-row");
+                                    const column = document.createElement("div");
+                                    column.classList.add("preview-column");
+                                    column.appendChild(resizedImg);
+                                    row.appendChild(column);
+                                    preview.appendChild(row);
+                                }
+
+                                /*
+                                // Append the resized image to the corresponding row
+                                const row = preview.querySelector(".preview-row:last-child");
+                                const column = document.createElement("div");
+                                column.classList.add("preview-column");
+                                column.appendChild(resizedImg);
+                                row.appendChild(column); */
+                                
+                                // Check if all images have been loaded
+                                counter++;
+                                if (counter === files.length) {
+                                // Add a new row if necessary to make sure the last row is filled
+                                    if (counter % 3 !== 0) {
+                                        const lastRow = preview.querySelector(".preview-row:last-child");
+                                        const emptyColumns = 3 - (counter % 3);
+                                        for (let j = 0; j < emptyColumns; j++) {
+                                            const emptyColumn = document.createElement("div");
+                                            emptyColumn.classList.add("preview-column");
+                                            lastRow.appendChild(emptyColumn);
+                                        }
+                                    }
+                                } 
+                                
+                            };
+                        };
+                        reader.readAsDataURL(file);
+
+                        // Add a new row if necessary
+                        if (i % 3 === 0) {
+                            const row = document.createElement("div");
+                            row.classList.add("preview-row");
+                            preview.appendChild(row);
+                        }
+                    }
+                }
+                document.getElementById("claim_images").addEventListener("change", handleFileSelect);
+            </script>
+
+            <style>
+                .preview-row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-bottom: 10px;
+                }
+                .preview-column {
+                    flex: 1 0 31%;
+                    margin-right: 2%;
+                    margin-bottom: 10px;
+                }
+            </style> <!-- END - Image preview section -->  
+            <!-- END - Upload Claim Images Row -->
+
+            <br>
+            <br>
+
+
+            <!-- Estimate Row -->
+            <h4 class="mb-3 text-center">Estimates</h4>
+
+            <!-- Estimate Tier 2 Checkbox -->
+            <style>
+                input[type="checkbox"][id="est_tier2"] {
+                    margin-left: 140px; /* Change the value as needed */
+                    vertical-align: left;
+                }
+            </style> 
+
+            <input type="checkbox" style="padding-left: 30px" id="est_tier2" name="est_tier2">
+            <label for="est_tier2">Claim Over $1500</label>
+            <!-- END - Estimate Tier 2 Checkbox -->
+
+            <!-- Estimate Tier 1 Row (under $1500) -->
+            <div class="row justify-content-center">
+                
+                <!-- Estimate 1 -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_estimate1">Estimate #1</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_estimate1" id="claim_estimate1" name="claim_estimate1" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                    function roundToTwoDecimalPlaces(inputField) {
+                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                    }
+                </script> <!-- END - Estimate 1 -->
+
+
+                <!-- Estimate 2 -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_estimate2">Estimate #2</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_estimate2" id="claim_estimate2" name="claim_estimate2" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                    function roundToTwoDecimalPlaces(inputField) {
+                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                    }
+                </script> <!-- END - Estimate 2 -->
+
+
+                <!-- Requested -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_req_amt">Requested</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_req_amt" id="claim_req_amt" name="claim_req_amt" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                    function roundToTwoDecimalPlaces(inputField) {
+                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                    }
+                </script> <!-- END - Requested -->
+
+            </div>  <!-- END - Estimate Tier 1 Row (under $1500) -->
+
+  
+            <!-- Hide Tier 2 Row (hidden unless claim over $1500 checkbox clicked) -->
+            <script>
+                $(document).ready(function() {
+                    // Hide the Estimate Tier 2 section initially
+                    $('#est-tier2-section').hide();
+            
+                    // Add an event listener to the Status field
+                    $('#est_tier2').on('change', function() {
+                        if ($(this).is(':checked')) {
+                            $('#est-tier2-section').show();
+                        } else {
+                            $('#est-tier2-section').hide();
+                        }
+                    });
+                });
+            </script> <!-- END - Hide Tier 2 -->
+
+            <!-- Estimate Tier 2 Row (over $1500) -->
+            <div class="row justify-content-center" id="est-tier2-section">
+                
+                <!-- Estimate 3 -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_estimate3">Estimate #3</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_estimate3" id="claim_estimate3" name="claim_estimate3" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div> 
+
+                <script>
+                    function roundToTwoDecimalPlaces(inputField) {
+                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                    }
+                </script> <!-- END - Estimate 3 -->
+
+                <!-- Estimate 4 -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_estimate4">Estimate #4</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_estimate4" id="claim_estimate4" name="claim_estimate4" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                    function roundToTwoDecimalPlaces(inputField) {
+                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                    }
+                </script> <!-- END - Estimate 4 -->
+
+                <!-- Estimate 5 -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_estimate5">Estimate #5</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_estimate5" id="claim_estimate5" name="claim_estimate5" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                    function roundToTwoDecimalPlaces(inputField) {
+                        inputField.value = parseFloat(inputField.value).toFixed(2);
+                    }
+                </script> <!-- END - Estimate 5 -->
+
+            </div>  <!-- END - Estimate Tier 2 Row (over $1500) -->
+
+            <br>
+            <br>
+
+
+            <!-- Amount Row -->
+            <h4 class="mb-3 text-center">Actual Claim Amount</h4>
+
+            <div class="row justify-content-center">
+
+                <!-- Agreed To -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_amt_agreed">Agreed Amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_amt_agreed" id="claim_amt_agreed" name="claim_amt_agreed" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                function roundToTwoDecimalPlaces(inputField) {
+                    inputField.value = parseFloat(inputField.value).toFixed(2);
+                }
+                </script> <!-- END - Agreed To -->
+
+                <!-- Deductible -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_deductible">Deductible</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="number" class="form-control claim_deductible" id="claim_deductible" name="claim_deductible" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+
+                <script>
+                function roundToTwoDecimalPlaces(inputField) {
+                    inputField.value = parseFloat(inputField.value).toFixed(2);
+                }
+                </script> <!-- END - Deductible -->
+
+
+                <!-- Net Amount -->
+                <div class="col-md-3 mb-3">
+                    <label for="claim_net_amt">Net Amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control claim_net_amt" id="claim_net_amt" name="claim_net_amt" value="0.00" disabled>
+                    </div>
+                </div>
+            
+                <script>
+                    // Get the input elements
+                    const agreedToInput = document.querySelector('.claim_amt_agreed');
+                    const deductibleInput = document.querySelector('.claim_deductible');
+                    const netAmountInput = document.querySelector('.claim_net_amt');
+
+                    // Add event listener to the agreed to and deductible inputs
+                    agreedToInput.addEventListener('input', calculateNetAmount);
+                    deductibleInput.addEventListener('input', calculateNetAmount);
+
+                    // Function to calculate net amount
+                    function calculateNetAmount() {
+                        const agreedTo = parseFloat(agreedToInput.value.replace('$', ''));
+                        const deductible = parseFloat(deductibleInput.value.replace('$', '')) || 0;
+                        const netAmount = agreedTo - deductible;
+                        netAmountInput.value = `${netAmount.toFixed(2)}`;
+                    }
+                </script> <!-- END - Net Amount -->
+
+            </div> <!-- END - Amount Row -->
+
+            <br>
+            <br>
+
+
+            <!-- Payment Row -->
+            <h4 class="mb-3 text-center">Payment Information</h4>
+
+            <div class="row justify-content-center">
+
+                <!-- Cheque Number -->
+                <div class="col-md-3 mb-3">
+                    <label for="cheque_num">Cheque #</label>
+                    <input type="text" class="form-control" id="cheque_num" name="cheque_num" placeholder="">
+                    <div class="invalid-feedback">
+                        Cheque number required.
+                    </div>
+                </div> <!-- END - Cheque Number -->
+
+                <!-- Pay To -->
+                <div class="col-md-3 mb-3">
+                    <label for="cheque_pay_to">Pay To</label>
+                    <input type="text" class="form-control" id="cheque_pay_to" name="cheque_pay_to" placeholder="">
+                    <div class="invalid-feedback">
+                        Name required.
+                    </div>
+                </div> <!-- END - Pay To -->
+
+                <!-- Include the Bootstrap and jQuery libraries -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+                <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+                
+                <!-- Include the Bootstrap datepicker library -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+                <!-- Cheque Date --> 
+                <div class="col-md-3 mb-3">
+                    <label for="cheque_date">Cheque Date</label>
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="cheque_date" name="cheque_date" value="{{ formatted_date }}">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                    // Get the current date
+                    var currentDate = new Date();
+                
+                    // Set the value of the claim date field to the formatted date
+                    var options = { month: 'long', day: 'numeric', year: 'numeric' };
+                    var formattedDate = currentDate.toLocaleDateString('en-US', options);
+                    document.getElementById("cheque_date").value = formattedDate;
+                
+                    // Initialize the datepicker
+                    $('.input-group.date').datepicker({
+                    format: 'MM dd, yyyy',
+                    todayHighlight: true,
+                    autoclose: true,
+                    orientation: 'bottom',
+                    templates: {
+                        leftArrow: '<i class="fa fa-angle-left"></i>',
+                        rightArrow: '<i class="fa fa-angle-right"></i>'
+                    }
+                    });
+                </script> <!-- END - Cheque Date --> 
+
+                <!-- Cheque Amount -->
+                <div class="col-md-3 mb-3">
+                    <label for="cheque_amt">Cheque Amount</label>
+                    <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                    </div>
+                    <input type="number" class="form-control cheque_amt" id="cheque_amt" name="cheque_amt" min="0" step="0.01" placeholder="0.00" value="0.00" required onblur="roundToTwoDecimalPlaces(this)">
+                    </div>
+                </div>
+                
+                <script>
+                function roundToTwoDecimalPlaces(inputField) {
+                    inputField.value = parseFloat(inputField.value).toFixed(2);
+                }
+                </script> <!-- END - Cheque Amount -->
+    
+            </div> <!-- END - Payment Row -->
+
+
+            <br>
+            <br>
+ 
+
+            <!-- Enable enter key to tab through entries -->
+            <script>
+                // Get all the input fields
+                const inputFields = document.querySelectorAll('input, select');
+
+                // Add event listener to prevent default behavior when "Enter" key is pressed
+                inputFields.forEach(function(inputField) {
+                    inputField.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                        }
+                    });
+                });
+            </script>
+
+            <script>
+                const form = document.querySelector('form');
+                const fields = form.querySelectorAll('input[type="text"]');
+                
+                fields.forEach((field, index) => {
+                field.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                    event.preventDefault();
+                    fields[index+1].focus();
+                    }
+                });
+                });
+            </script> <!-- END - Enable enter key to tab through entries -->
+
+            <!-- Prevent form submission when required fields are not filled in -->
+            <script>
+                const myForm = document.getElementById('claimForm');
+                claimForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                });
+            </script>
+
+            <script>
+                // Disabling form submissions if there are invalid fields
+                (function() {
+                    'use strict';
+                
+                    window.addEventListener('load', function() {
+                        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                        var forms = document.getElementsByClassName('needs-validation');
+                
+                        // Loop over them and prevent submission
+                        var validation = Array.prototype.filter.call(forms, function(form) {
+                            form.addEventListener('submit', function(event) {
+                                if (form.checkValidity() === false) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                } else {
+                                    // Submit the form
+                                    form.submit();
+                                }
+                                form.classList.add('was-validated');
+                            }, false);
+                        });
+                    }, false);
+                })();
+            </script> <!-- END - Prevent form submission when required fields are not filled in -->
+
+            <hr class="mb-4"> <!-- Divider Line -->
+            
+            <!-- Submit Button -->
+            <button class="btn btn-dark btn-lg btn-block" type="submit" id="claim_submitted" name="claim_submitted">Submit</button>
+            
+            <!-- Footer -->
+            <footer class="my-5 pt-5 text-muted text-center text-small">
+                <br>
+            </footer>
+        </form> <!-- END - Form -->
+    </div> <!-- END - Form Format -->
+</div> <!-- END - New Claim Form Class -->
+
+{% endblock content %}

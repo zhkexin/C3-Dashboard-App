@@ -1,0 +1,80 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics Reports</title>
+
+</head>
+
+<body>
+	<h1 style="text-align: center;" class="page-title">Reports Dashboard</h1>
+	<br>
+	<div class="section">
+		<h2 style="text-align: center;" class="section-title">Sales</h2>
+
+		<div style="text-align: center;">
+			<div class="bar"></div>
+		</div>
+		<div style="text-align: center;">
+			{% load static %} 
+			<img src="{% static 'bootstrap/css/car-sales-graph.png' %}" alt="Car Sales Graph">
+		</div>
+		<br><br>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Dealership</th>
+					<th>Daily Sales</th>
+					<th>Total Revenue</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{ sale.dealership }}</td>
+					<td>{{ sale.daily_sales }}</td>
+					<td>{{ sale.total_revenue }}</td>
+				</tr>
+			</tbody>
+		</table>
+        <div style="text-align: center;">
+            <form method="get" action="{% url 'web_app:export_sales_csv' %}">
+                <button type="submit">Export Sales Report</button>
+            </form>
+		</div>
+	</div>
+
+	<br><br>
+    <!-- Claims Table -->
+    <div class="section">
+		<h2 style="text-align: center;" class="section-title">Claims</h2>
+        
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Number of Claims</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>{{ claim.number_of_claims }}</td>
+				</tr>
+			</tbody>
+		</table>
+        <div style="text-align: center;">
+            <form method="get" action="{% url 'web_app:export_claims_csv' %}">
+                <button type="submit">Export Claims Report</button>
+            </form>
+		</div>
+	</div>
+	<br><br><br><br>
+
+</body>
+
+{% endblock content %}
+
+</html>
+
+

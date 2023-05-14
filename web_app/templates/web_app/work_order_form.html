@@ -1,0 +1,83 @@
+{% extends 'web_app/base.html' %}
+{% block content %}
+  
+  <!-- Navigation Tabs, source: https://getbootstrap.com/docs/4.0/components/navbar/ -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link text-primary" href="{% url 'web_app:work_order_forms'%}">All Work Orders</a>
+    </li>
+
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" href="{% url 'web_app:work_order_form' work_order_form.work_order_form_number %}">Current Work Order Form</a>
+    </li>
+
+    <li class="nav-item" role="presentation">
+        <a class="nav-link" href="{% url 'web_app:new_work_order_form'%}">New Work Order Form</a>
+    </li>
+  </ul>
+  <!-- END - Navigation Tabs -->
+  <br>
+  
+  <!-- Work Order Form table -->
+  <div class="container">
+    <h1>Work Order Form {{ work_order_form.work_order_form_number }}</h1>
+    <h2 style="font-size: 25px; margin-top: 20px;">Work Order Form Information</h2>
+    <hr>
+    <div class="row">
+      <div class="col-md-4">
+        <h3 style="font-size: 21px;">Date Added:</h3>
+        <p>{{ work_order_form.date_added }}</p>
+        <h3 style="font-size: 21px;">Product:</h3>
+        <p>{{ work_order_form.product }}</p>
+        <h3 style="font-size: 21px;">Quantity Used:</h3>
+        <p>{{ work_order_form.quantity_used }}</p>
+        <h3 style="font-size: 21px;">Payment Amount:</h3>
+        <p>{{ work_order_form.payment_amount }}</p>
+      </div>
+    </div>
+
+    <h2 style="font-size: 25px;">Customer Information</h2>
+    <hr>
+    <div class="row">
+      <div class="col-md-4">
+        <h3 style="font-size: 21px;">Customer Name:</h3>
+        <p>{{ work_order_form.customer_name }}</p>
+        <h3 style="font-size: 21px;">Customer Phone:</h3>
+        <p>{{ work_order_form.customer_phone }}</p>
+        <h3 style="font-size: 21px;">Vehicle Make:</h3>
+        <p>{{ work_order_form.vehicle_make }}</p>
+        <h3 style="font-size: 21px;">Vehicle VIN:</h3>
+        <p>{{ work_order_form.vehicle_vin }}</p>
+      </div>
+    </div>
+
+    <h2 style="font-size: 25px;">Dealership Information</h2>
+    <hr>
+    <div class="row">
+      <div class="col-md-4">
+        <h3 style="font-size: 21px;">Dealership Name:</h3>
+        <p>{{ work_order_form.dealership_name }}</p>
+        <h3 style="font-size: 21px;">Dealership Phone:</h3>
+        <p>{{ work_order_form.dealership_phone }}</p>
+        <h3 style="font-size: 21px;">Contact Name:</h3>
+        <p>{{ work_order_form.contact_name }}</p>
+        <h3 style="font-size: 21px;">Dealership Email:</h3>
+        <p>{{ work_order_form.dealership_email }}</p>
+        <h3 style="font-size: 21px;">Address:</h3>
+        <p>{{ work_order_form.address }}</p>
+        <h3 style="font-size: 21px;">Country:</h3>
+        <p>{{ work_order_form.country }}</p>
+        <h3 style="font-size: 21px;">Province:</h3>
+        <p>{{ work_order_form.province }}</p>
+        <h3 style="font-size: 21px;">Postal Code:</h3>
+        <p>{{ work_order_form.postal_code }}</p>
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}
+  
+  
+  
+
+  

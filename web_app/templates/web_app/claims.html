@@ -1,0 +1,274 @@
+{% extends "web_app/base.html" %}
+
+<body>
+  {% block content %}
+  <br>
+
+  <!-- Navigation Tabs, source: https://getbootstrap.com/docs/4.0/components/navbar/ -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="allclaims-tab" data-bs-toggle="tab" href="{% url 'web_app:claims'%}" role="tab" aria-controls="nav-allclaims" aria-selected="true">All Claims</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" href="{% url 'web_app:newclaim'%}">New Claim</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link disabled" href="Policies">Policies</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link disabled" href="Warranties">Warranties</a>
+    </li>
+  </ul>
+   
+  <br>
+
+  <!-- List of Claims -->
+  <div style="margin-left:16px; margin-right:16px">
+
+    <!-- Search Bar -->
+    <br>
+    <form class="d-flex" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search (Future Feature)" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <br>
+
+    <button id="toggle-button">Show/Hide Additional Claim Information</button>
+    <br>
+    <br>
+
+    <div class="table-wrapper">
+    <!-- Claims Table -->
+    <table style="padding-right: 8px" class="table">
+      <thead>
+        <tr>
+          <th style="vertical-align: top;">Claim #</th>
+          <th style="vertical-align: top;">Date Added</th>
+          <th style="vertical-align: top;">Status</th>
+          <th style="vertical-align: top;" class = "hidden" >Approved By</th>
+          <th style="vertical-align: top;" class = "hidden" >Approved To</th>
+          <th style="vertical-align: top;" class = "hidden" >Approved Date</th>
+          <th style="vertical-align: top;" class = "hidden" >Rejected By</th>
+          <th style="vertical-align: top;" class = "hidden" >Rejection Date</th>
+          <th style="vertical-align: top;" class = "hidden" >Rejection Reason</th>
+          <th style="vertical-align: top;">Claim Date</th>
+          <th style="vertical-align: top;">Effective Date</th>
+          <th style="vertical-align: top;">Process Date</th>
+          <th style="vertical-align: top;">PO #</th>
+          <th style="vertical-align: top;">File #</th>
+          <th style="vertical-align: top;">Agreement #</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Active</th>
+          <th style="vertical-align: top;">Shop Name</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Phone</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Contact</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Email</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Address</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Address 2</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Country</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Province/Territory</th>
+          <th style="vertical-align: top;" class = "hidden" >Shop Postal Code</th>
+          <th style="vertical-align: top;">Customer First Name</th>
+          <th style="vertical-align: top;">Customer Last Name</th>
+          <th style="vertical-align: top;">Policy Type</th>
+          <th style="vertical-align: top;">Coverage Type</th>
+          <th style="vertical-align: top;">Vehicle VIN</th>
+          <th style="vertical-align: top;" class = "hidden" >Details</th>
+          <th style="vertical-align: top;" class = "hidden" >Estimate #1</th>
+          <th style="vertical-align: top;" class = "hidden" >Estimate #2</th>
+          <th style="vertical-align: top;" class = "hidden" >Requested</th>
+          <th style="vertical-align: top;" class = "hidden" >Estimate #3</th>
+          <th style="vertical-align: top;"class = "hidden" >Estimate #4</th>
+          <th style="vertical-align: top;" class = "hidden" >Estimate #5</th>
+          <th style="vertical-align: top;" class = "hidden" >Agreed Amount</th>
+          <th style="vertical-align: top;" class = "hidden" >Deductible</th>
+          <th style="vertical-align: top;">Claim Amount</th>
+          <th style="vertical-align: top;" class = "hidden" >Cheque #</th>
+          <th style="vertical-align: top;" class = "hidden" >Cheque Pay To</th>
+          <th style="vertical-align: top;" class = "hidden" >Cheque Date</th>
+          <th style="vertical-align: top; padding-right: 30px;" class = "hidden" >Cheque Amount</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+          {% for claim in claims %}
+            <tr> 
+              
+              <!-- Link to View Claim -->
+              <td>
+              <a href="{% url 'web_app:viewclaim' claim.claim_number %}">{{ claim.claim_number }}</a>
+              </td>
+
+              <!-- Future Feature: Claim Number will be a link to popup a selection for either viewing or editing claim --> 
+              <!--
+              <td style="color: grey; text-decoration: underline">
+                <a href="#" onclick="return showOptions();">{{ claim.claim_number }}</a>
+              </td>
+              -->
+
+              <td>
+                <div style="width: 100px; overflow-x: auto;">{{ claim.date_added|date:"F j, Y" }}</div>
+              </td>
+              {% if claim.status == "status_rejected" %}
+              <td style="color: red">{{ claim.get_status_display }}</td>
+              {% elif claim.status == "status_paid" %}
+              <td style="color: green">{{ claim.get_status_display }}</td>
+              {% else %}
+              <td>{{ claim.get_status_display }}</td>
+              {% endif %}
+              <td class ="hidden">{{ claim.claim_approvedby|default:" " }}</td>
+              <td class ="hidden">{{ claim.claim_approvedto|default:" " }}</td>
+              <td class ="hidden">
+                <div style="width: 100px; overflow-x: auto;">{% if claim.status != "status_approved" %} {% else %}{{ claim.claim_approved_date|date:"F j, Y" }}{% endif %}</div>
+              </td>
+              <td class ="hidden">{{ claim.claim_rejectedby|default:" " }}</td>
+              <td class ="hidden">
+                <div style="width: 100px; overflow-x: auto;">{% if claim.status != "status_rejected" %} {% else %}{{ claim.claim_rejection_date|date:"F j, Y" }}{% endif %}</div>
+              </td>
+              <td class="hidden">
+                <div style="width: 200px; overflow-x: auto;">{{ claim.claim_rejection_reason|default:" " }}</div>
+              </td>
+              <td>
+                <div style="width: 100px; overflow-x: auto;">{{ claim.claim_date|date:"F j, Y" }}</div>
+              </td>
+              <td>
+                <div style="width: 100px; overflow-x: auto;">{{ claim.effective_date|date:"F j, Y" }}</div>
+              </td>
+              <td>
+                <div style="width: 100px; overflow-x: auto;">{{ claim.process_date|date:"F j, Y" }}</div>
+              </td>
+              <td>{{ claim.po_num }}</td>
+              <td>{{ claim.file_num }}</td>
+              <td>{{ claim.agreement }}</td>
+              <td class="hidden">{% if claim.shop_active %}YES{% else %}NO{% endif %}</td>
+              <td>{{ claim.shop_name }}</td>
+              <td class ="hidden">
+                <div style="width: 100px; overflow-x: auto;">{{ claim.shop_phone }}</div>
+              </td>
+              <td class ="hidden">{{ claim.shop_contact|default:" " }}</td>
+              <td class ="hidden">{{ claim.shop_email|default:" " }}</td>
+              <td class ="hidden">
+                <div style="width: 150px; overflow-x: auto;">{{ claim.shop_address }}</div>
+              </td>
+              <td class ="hidden">
+                <div style="width: 150px; overflow-x: auto;">{{ claim.shop_address2|default:" " }}</div>
+              </td>
+              <td class ="hidden">{{ claim.shop_country }}</td>
+              <td class ="hidden">{{ claim.shop_province }}</td>
+              <td class ="hidden">
+                <div style="width: 100px; overflow-x: auto;">{{ claim.shop_postalcode }}</div>
+              </td>
+              <td>{{ claim.cust_fname }}</td>
+              <td>{{ claim.cust_lname }}</td>
+              <td>{{ claim.policy_type }}</td>
+              <td>{{ claim.coverage_type }}</td>
+              <td>{{ claim.vin }}</td>
+              <td class="hidden">
+                <div style="width: 200px; overflow-x: auto;">{{ claim.claim_details }}</div>
+              </td>
+              <td class ="hidden">{% if claim.claim_estimate1 == 0 %} {% else %}${{ claim.claim_estimate1|default:" " }}{% endif %}</td>
+              <td class ="hidden">{% if claim.claim_estimate2 == 0 %} {% else %}${{ claim.claim_estimate2|default:" " }}{% endif %}</td>
+              <td class ="hidden">{% if claim.claim_req_amt == 0 %} {% else %}${{ claim.claim_req_amt|default:" " }}{% endif %}</td>
+              <td class ="hidden">{% if claim.claim_estimate3 == 0 %} {% else %}${{ claim.claim_estimate3|default:" " }}{% endif %}</td>
+              <td class ="hidden">{% if claim.claim_estimate4 == 0 %} {% else %}${{ claim.claim_estimate4|default:" " }}{% endif %}</td>
+              <td class ="hidden">{% if claim.claim_estimate5 == 0 %} {% else %} ${{claim.claim_estimate5|default:" " }}{% endif %}</td>
+              <td class = "hidden">{% if claim.claim_amt_agreed == 0 %} {% else %}${{ claim.claim_amt_agreed|default:" " }}{% endif %}</td>
+              <td class ="hidden">{% if claim.claim_deductible == 0 %} {% else %}${{ claim.claim_deductible|default:" " }}{% endif %}</td>
+              <td>{% if claim.claim_net_amt == 0 %} {% else %}${{ claim.claim_net_amt|default:" " }}{% endif %}</td>
+              <td class ="hidden">{{ claim.cheque_num|default:" " }}</td>
+              <td class ="hidden">{{ claim.cheque_pay_to|default:" " }}</td>
+              <td class ="hidden">
+                <div style="width: 100px; overflow-x: auto;">{% if claim.cheque_amt == 0 %} {% else %}{{ claim.cheque_date|date:"F j, Y" }}{% endif %}</div>
+              </td>
+              <td style="padding-right: 30px;" class ="hidden">{% if claim.cheque_amt == 0 %} {% else %}${{ claim.cheque_amt|default:" " }}{% endif %}</td> 
+            </tr>
+
+              {% empty %}
+                <tr>
+                  <td colspan="17">No claims have been added yet.</td>
+                </tr>
+            {% endfor %} 
+      
+      </tbody>
+    
+    </table>
+    </div>
+
+    <!-- Show/Hide Additional Claim Information Script -->
+    <script>
+      // Get the button element
+      const toggleButton = document.getElementById("toggle-button");
+      const hiddenColumns = document.querySelectorAll('.hidden');
+      let columnsHidden = true;
+    
+      // Add a click event listener to the button
+      toggleButton.addEventListener("click", function() {
+        // Toggle the boolean variable
+        columnsHidden = !columnsHidden;
+    
+        // Loop through the hidden columns and toggle their display and class
+        for (let i = 0; i < hiddenColumns.length; i++) {
+          if (columnsHidden) {
+            hiddenColumns[i].classList.add("hidden");
+            hiddenColumns[i].setAttribute("hidden", "true");
+          } else {
+            hiddenColumns[i].classList.remove("hidden");
+            hiddenColumns[i].removeAttribute("hidden");
+          }
+        }
+      });
+    </script>
+
+    <!-- Claim # Link Popup to View/Edit Claim (Future Feature to implement)-->
+    <!--
+    <script>
+      function showOptions() {
+        // Show a confirmation dialog with two options
+        const confirmed = confirm("Do you want to edit this claim? (Future Feature)");
+
+        // If the user clicks "OK" (i.e. confirmed), redirect to the edit page
+        if (confirmed) {
+          // Redirect to the edit page
+          const url = '/edit-claim/' + claim.id;
+          window.location.href = url;
+        }
+
+        // Return false to prevent the default link behavior
+        return false;
+      }
+    </script>
+    -->
+    
+    <style>
+      .table-wrapper {
+        padding-right: 8px; 
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        padding-right: 8px; 
+      }
+      th, td {
+        padding: 8px;
+        text-align: center;
+        width: calc(100% / 16);
+        font-size: 14px; 
+      }
+      th {
+        font-weight: bold;
+      }
+      .hidden {
+        display: none;
+        padding-right: 8px;
+      }
+
+    </style>
+      
+    <br>
+  
+  </div>
+
+  {% endblock content %}
+</body>
+
+

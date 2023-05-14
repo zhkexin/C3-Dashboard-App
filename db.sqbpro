@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="D:\Dropbox\~ UofA\2023 Winter\BTM 419 SYS DEV\Assignments\Group Project\Coding Files\db.sqlite3" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="9008"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,10:mainauth_group"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">SELECT * FROM web_app_work_order_form
+
+INSERT INTO web_app_work_order_form (product, text, date_added, dealership_name, address, contact_name, country, customer_name, customer_phone, dealership_email, dealership_phone, payment_amount, postal_code, province, quantity_used, vehicle_make, vehicle_vin)
+VALUES ('Paint Protection', ' ', '2023-04-07 05:37:04.065793', 'Honda',' 43212 Main Street', 'Jack', 'CAN', 'Gary', '7801232131', 'gary@hondadealers.com', '7802224444', 500, 'TTR B32', 'BC', 2, 'Mazda', '21490155');
+
+SELECT * FROM web_app_work_order_form
+
+
+
+SELECT * FROM web_app_claim
+</sql><current_tab id="0"/></tab_sql></sqlb_project>

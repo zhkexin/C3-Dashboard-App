@@ -1,0 +1,53 @@
+{% extends "web_app/base.html" %}
+
+{% block content %}
+  <br>
+  <!-- Navigation Tabs, source: https://getbootstrap.com/docs/5.0/components/navs-tabs/ -->
+  <ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="allworkorders-tab" data-bs-toggle="tab" href="{% url 'web_app:work_order_forms'%}" role="tab" aria-controls="nav-allworkorders" aria-selected="true">All Work Order Forms</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" href="{% url 'web_app:new_work_order_form'%}">New Work Order</a>
+    </li>
+  </ul>
+  <br>
+  
+  <div style="margin-left:16px; margin-right:16px">
+    <br>
+    <form class="d-flex" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search (Future Feature)" aria-label="Search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+    <br>
+    <!-- Future Feature - Toggle Button -->
+    <!--
+    <button id="toggle-button">Show/Hide Additional Work Order Form Information</button> 
+    <br>
+    <br> -->
+    
+    <!-- Work Order Forms Table -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Work Order Number</th>
+          <th>Dealership</th>
+          <th>Date Added</th>
+          <th>Customer</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        {% for work_order_form in work_order_forms %}
+          <tr>
+            <td><a href="{% url 'web_app:work_order_form' work_order_form.work_order_form_number %}">Work Order Form {{ work_order_form.work_order_form_number }}</a></td> <!--creates link to specific WOF-->
+            <td>{{ work_order_form.dealership_name }}</td>
+            <td>{{ work_order_form.date_added|date:"F j, Y" }}</td>
+            <td>{{ work_order_form.customer_name }}</td>
+          </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+{% endblock content %}

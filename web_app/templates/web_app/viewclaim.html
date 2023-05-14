@@ -1,0 +1,148 @@
+{% extends 'web_app/base.html' %}
+{% block content %}
+  
+<br>
+  <!-- Navigation Tabs, source: https://getbootstrap.com/docs/4.0/components/navbar/ -->
+
+  <ul class="nav nav-tabs">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" href="{% url 'web_app:claims'%}">All Claims</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" href="{% url 'web_app:newclaim'%}">New Claim</a>
+    </li>
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" href="{% url 'web_app:viewclaim' viewclaim.claim_number %}">View Claim {{ viewclaim.claim_number }}</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link disabled" href="Policies">Policies</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link disabled" href="Warranties">Warranties</a>
+    </li>
+  </ul>
+
+
+  <br>
+  
+  <div class="container">
+    <h1>Claim {{ viewclaim.claim_number }}</h1>
+    <h2 style="font-size: 25px; margin-top: 20px;">Claim Information</h2>
+    <hr>
+
+        <h3 style="font-size: 21px;">Date Added:</h3>
+        <p>{{ viewclaim.date_added|date:"F j, Y" }}</p>
+        <h3 style="font-size: 21px;">Status:</h3>
+        {% if viewclaim.status == "status_rejected" %}
+        <p style="color: red">{{ viewclaim.get_status_display }}</p>
+        {% elif viewclaim.status == "status_paid" %}
+        <p style="color: green">{{ viewclaim.get_status_display }}</p>
+        {% else %}
+            <p>{{ viewclaim.get_status_display }}</p>
+        {% endif %}
+        <h3 style="font-size: 21px;">Claim Date:</h3>
+        <p>{{ viewclaim.date_added|date:"F j, Y" }}</p>
+
+        {% if viewclaim.status == "status_approved" %}
+        <h3 style="font-size: 21px;">Approved By:</h3>
+        <p>{{ viewclaim.claim_approvedby|default:" " }}</p>
+        <h3 style="font-size: 21px;">Approved To:</h3>
+        <p>{{ viewclaim.claim_approvedto|default:" " }}</p>
+        <h3 style="font-size: 21px;">Approved Date:</h3>
+        <p>{% if viewclaim.status != "status_approved" %} {% else %}{{ viewclaim.claim_approved_date|date:"F j, Y" }}{% endif %}</p>
+
+        {% elif viewclaim.status == "status_rejected" %}
+        <h3 style="font-size: 21px;">Rejected By:</h3>
+        <p>{{ viewclaim.claim_rejectedby|default:" " }}</p>
+        <h3 style="font-size: 21px;">Rejection Date:</h3>
+        <p>{% if viewclaim.status != "status_rejected" %} {% else %}{{ viewclaim.claim_rejection_date|date:"F j, Y" }}{% endif %}</p>
+        <h3 style="font-size: 21px;">Reason for Rejection:</h3>
+        <p>{{ viewclaim.claim_rejection_reason|default:" " }}</p>
+        {% endif %}
+
+        <h3 style="font-size: 21px;">Claim Date:</h3>
+        <p>{{ viewclaim.claim_date|date:"F j, Y" }}</p>
+        <h3 style="font-size: 21px;">Effective Date:</h3>
+        <p>{{ viewclaim.effective_date|date:"F j, Y" }}</p>
+        <h3 style="font-size: 21px;">Process Date:</h3>
+        <p>{{ viewclaim.process_date|date:"F j, Y" }}</p>
+        <h3 style="font-size: 21px;">PO #:</h3>
+        <p>{{ viewclaim.po_num }}</td>
+        <h3 style="font-size: 21px;">File #:</h3>
+        <p>{{ viewclaim.file_num }}</p>
+        <h3 style="font-size: 21px;">Agreement #:</h3>
+        <p>{{ viewclaim.agreement }}</p>
+
+        <br>
+        <h2 style="font-size: 25px; margin-top: 20px;">Repair Shop Information</h2>
+        <hr>
+        <h3 style="font-size: 21px;">Active:</h3>
+        <p>{% if viewclaim.shop_active %}YES{% else %}NO{% endif %}</p>
+        <h3 style="font-size: 21px;">Shop Name:</h3>
+        <p>{{ viewclaim.shop_name }}</p>
+        <h3 style="font-size: 21px;">Phone Number:</h3>
+        <p>{{ viewclaim.shop_phone }}</p>
+        <p>{% if viewclaim.shop_contact == "" %}{% else %}<h3 style="font-size: 21px;">Contact Name:</h3>{{ viewclaim.shop_contact|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.shop_email == "" %}{% else %}<h3 style="font-size: 21px;">Email:</h3>{{ viewclaim.shop_email|default:" " }}{% endif %}</p>
+        <h3 style="font-size: 21px;">Address:</h3>
+        <p>{{ viewclaim.shop_address }}</p>
+        <p>{% if viewclaim.shop_address2 == "" %}{% else %}<h3 style="font-size: 21px;">Address 2:</h3>{{ viewclaim.shop_address2|default:" " }}{% endif %}</p>
+        <h3 style="font-size: 21px;">Country:</h3>
+        <p>{{ viewclaim.shop_country }}</p>
+        <h3 style="font-size: 21px;">Province/Territory:</h3>
+        <p>{{ viewclaim.shop_province }}</p>
+        <h3 style="font-size: 21px;">Postal Code:</h3>
+        <p>{{ viewclaim.shop_postalcode }}</p>
+
+        <br>
+        <h2 style="font-size: 25px; margin-top: 20px;">Customer Information</h2>
+        <hr>
+        <h3 style="font-size: 21px;">First Name:</h3>
+        <p>{{ viewclaim.cust_fname }}</p>
+        <h3 style="font-size: 21px;">Last Name:</h3>
+        <p>{{ viewclaim.cust_lname }}</p>
+        <h3 style="font-size: 21px;">Policy Type:</h3>
+        <p>{{ viewclaim.policy_type }}</p>
+        <h3 style="font-size: 21px;">Coverage Type:</h3>
+        <p>{{ viewclaim.coverage_type }}</p>
+        <h3 style="font-size: 21px;">Vehicle VIN:</h3>
+        <p>{{ viewclaim.vin }}</p>
+
+        <br>
+        <h2 style="font-size: 25px; margin-top: 20px;">Problem</h2>
+        <hr>
+        <p>{{ viewclaim.claim_details }}</td>
+        <br>
+
+        {% if viewclaim.claim_req_amt != 0 or viewclaim.claim_estimate1 != 0 or viewclaim.claim_estimate2 != 0 or viewclaim.claim_estimate3 != 0 or viewclaim.claim_estimate4 != 0 or viewclaim.claim_estimate5 != 0 %}
+        <br><h2 style="font-size: 25px; margin-top: 20px;">Estimates</h2><hr>
+        {% endif %}
+        <p>{% if viewclaim.claim_req_amt == 0 %}{% else %}<h3 style="font-size: 21px;">Requested:</h3>${{ viewclaim.claim_req_amt|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_estimate1 == 0 %}{% else %}<h3 style="font-size: 21px;">Estimate #1:</h3>${{ viewclaim.claim_estimate1|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_estimate2 == 0 %}{% else %}<h3 style="font-size: 21px;">Estimate #2:</h3>${{ viewclaim.claim_estimate2|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_estimate3 == 0 %}{% else %}<h3 style="font-size: 21px;">Estimate #3:</h3>${{ viewclaim.claim_estimate3|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_estimate4 == 0 %}{% else %}<h3 style="font-size: 21px;">Estimate #4:</h3>${{ viewclaim.claim_estimate4|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_estimate5 == 0 %}{% else %}<h3 style="font-size: 21px;">Estimate #5:</h3> ${{viewclaim.claim_estimate5|default:" " }}{% endif %}</p>
+
+
+        <p>{% if viewclaim.claim_amt_agreed == 0 %}{% else %}<br><h2 style="font-size: 25px; margin-top: 20px;">Actual Claim Amount</h2>
+            <hr><h3 style="font-size: 21px;">Agreed Amount:</h3>${{ viewclaim.claim_amt_agreed|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_deductible == 0 %}{% else %}<h3 style="font-size: 21px;">Deductible:</h3>${{ viewclaim.claim_deductible|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.claim_net_amt == 0 %}{% else %}<h3 style="font-size: 21px;">Net Amount:</h3>${{ viewclaim.claim_net_amt|default:" " }}{% endif %}</p>
+        
+        <p>{% if viewclaim.cheque_num == "" %}{% else %}<br><h2 style="font-size: 25px; margin-top: 20px;">Payment Information</h2>
+            <hr><h3 style="font-size: 21px;">Cheque #:</h3><p>{{ viewclaim.cheque_num|default:" " }}</p>{% endif %}</p>
+        <p>{% if viewclaim.cheque_pay_to == "" %}{% else %}<h3 style="font-size: 21px;">Pay To:</h3>{{ viewclaim.cheque_pay_to|default:" " }}{% endif %}</p>
+        <p>{% if viewclaim.cheque_amt == 0 %}{% else %}<h3 style="font-size: 21px;">Cheque Date:</h3>{{ viewclaim.cheque_date|date:"F j, Y" }}{% endif %}</p>
+        <p>{% if viewclaim.cheque_amt == 0 %}{% else %}<h3 style="font-size: 21px;">Cheque Amount:</h3>${{ viewclaim.cheque_amt|default:"N/A" }}{% endif %}</p>
+        <br>
+        <br>
+</div>
+
+
+{% endblock %}
+  
+  
+  
+
+  
