@@ -3,7 +3,8 @@
 write a description of the app
 
 ## Data Management
-write a descirption of the folders and how data is accessed
+
+Test case documents can be found in the `test_case` folder.
 
 ## Demo
 
